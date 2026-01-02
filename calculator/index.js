@@ -1,16 +1,45 @@
+const inputEl = document.getElementById("input");
 let question="";
 
 function display(params) {
-    document.getElementById("input").value += params;
-    question+=params;
+    question += params;
+    inputEl.value += params;
 }
 
 function alterDisplay(val){
-    document.getElementById("input").value = val;
+    inputEl.value = val;
+}
+
+const buttons = document.querySelectorAll('input[type="button"]');
+buttons.forEach(btn => {
+    btn.addEventListener('click', handleButtonClick);
+});
+
+function handleButtonClick(e)
+{
+    let key = e.target.value;
+
+    if('+-/*'.includes(key))
+    {
+        insertOperation(key);
+    }
+    else if(key === 'C')
+    {
+        clr();
+    }
+    else if(key === '=')
+    {
+        solve();
+    }
+    else
+    {
+        display(key)
+    }
 }
 
 function insertOperation(_ops){
-    let x = document.getElementById("input").value;
+    let x = inputEl.value;
+    
     if (x.length > 0 &&
         (x[x.length - 1] === '+' ||
         x[x.length - 1] === '-' ||
@@ -60,16 +89,13 @@ function solve()
     while(x.includes('*') || x.includes('/'))
     {
         id = upperOpsId(x);
-
-        [...x] = sequenceOps(x, id, id-1, id+1);
+        x = sequenceOps(x, id, id-1, id+1);
     }
-    
 
     while(x.length > 1)
     {
         id = 1;
-        
-        [...x] = sequenceOps(x, id, id-1, id+1);
+        x = sequenceOps(x, id, id-1, id+1);
     }
     
 
