@@ -98,6 +98,7 @@ function solve()
     }
     
     state.token = x;
+    state.expression = x[0];
     render();
 }
 
