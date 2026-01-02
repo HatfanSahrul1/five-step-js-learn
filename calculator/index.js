@@ -1,61 +1,61 @@
 const inputEl = document.getElementById("input");
-let question="";
 
-function display(params) {
-    question += params;
-    inputEl.value += params;
-}
-
-function alterDisplay(val){
-    inputEl.value = val;
-}
+const state = {
+    expression : "",
+    token : []
+};
 
 const buttons = document.querySelectorAll('input[type="button"]');
 buttons.forEach(btn => {
     btn.addEventListener('click', handleButtonClick);
 });
 
-function handleButtonClick(e)
-{
+function handleButtonClick(e){
     let key = e.target.value;
 
-    if('+-/*'.includes(key))
-    {
-        insertOperation(key);
-    }
-    else if(key === 'C')
-    {
+    if('+-/*'.includes(key)){
+        pushOperator(key);
+    }else if(key === 'C'){
         clr();
-    }
-    else if(key === '=')
-    {
+    }else if(key === '='){
         solve();
-    }
-    else
-    {
-        display(key)
+    }else{
+        pushNumber(key)
     }
 }
 
-function insertOperation(_ops){
-    let x = inputEl.value;
+function pushNumber(params) {
+    state.expression += params;
+
+    if(state.token.length === 0){
+        state.token.push(state.expression);
+    }
     
-    if (x.length > 0 &&
-        (x[x.length - 1] === '+' ||
-        x[x.length - 1] === '-' ||
-        x[x.length - 1] === '/' ||
-        x[x.length - 1] === '*')
-    )
-    {
-        question = question.replace(question[question.length - 2], _ops);
-        alterDisplay(x.replace(x[x.length - 1], _ops));
+    if('+-/*'.includes(state.token[state.token.length - 1])){
+        state.token.push(state.expression);
+    }else{
+        state.token[state.token.length - 1] = state.expression;
     }
-    else
-    {
-        question += '|';
-        display(_ops);
-        question += '|';
+    render();
+}
+
+function alterDisplay(val){
+    inputEl.value = val;
+}
+
+function pushOperator(_ops){
+    if(state.token.length === 0 && _ops === '-'){
+        state.expression += _ops;
+    }else{
+        if(state.token.length !== 0 && '+-/*'.includes(state.token[state.token.length - 1])){
+            state.token[state.token.length - 1] = _ops;
+        }else{
+            state.token.push(_ops);
+            state.expression = "";
+        }
     }
+
+    render();
 }
 
 const operations = {
@@ -67,9 +67,8 @@ const operations = {
 
 function solve()
 {
-    console.log(question);
-
-    let x = question.split('|');
+    if(state.token.length % 2 === 0) state.token.pop();
+    let x = state.token;
     
     const upperOpsId = (q)=>{
         for(let i = 1; i < q.length;i+=2)
@@ -98,13 +97,18 @@ function solve()
         x = sequenceOps(x, id, id-1, id+1);
     }
     
-
-    question = `${x[0]}`
-    alterDisplay(x[0]);
+    state.token = x;
+    render();
 }
 
 function clr()
 {
-    alterDisplay("");
-    question ="";
+   inputEl.value = "";
+   state.token = [];
+   state.expression = "";
+}
+
+function render()
+{
+    inputEl.value = (state.token.length !== 0) ? state.token.join('') : state.expression;
 }
