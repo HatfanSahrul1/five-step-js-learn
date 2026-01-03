@@ -5,8 +5,8 @@ const rl = readline.createInterface({
     output : process.stdout,
 });
 
-const operation = ([...numbers], opsType) => {
-    [first, ...rest] = numbers;
+const operation = (numbers, opsType) => {
+    let [first, ...rest] = numbers;
     switch (opsType) {
         case "tambah": return rest.reduce((acc, curr) => acc + curr, first); break;
         case "kurang": return rest.reduce((acc, curr) => acc - curr, first); break;
@@ -27,19 +27,23 @@ function ask(question){
         let total;
 
         opsType = opsType.toString().toLowerCase();
+        
         list = list.map((number) => Number(number));
+        if(!list.every(Number.isFinite)){
+            console.log(`Angka tidak valid\n`);
+        }
         
         if(opsList.includes(opsType)){
             total = operation(list, opsType);
             console.log(`==================================`);
-            console.log(`Hasilnya adalah : ${total}\n`);
+            console.log(`Hasilnya adalah : ${total}`);
             console.log(`==================================`);
         }else{
             console.log(`Command Salah [${opsType}]\n`);
         }
-    });
 
-    ask(question);
+        ask(question);
+    });
 }
 
 console.log("SELAMAT DATANG DI KALKULATOR CLI\n");
