@@ -140,6 +140,7 @@ function CalculatorProcessor(opsType, secondArgs = []){
         default:
             if(secondArgs.length === 0){
                 console.log(`error : Insert some number`);
+                break;
             }
 
             let [...list] = secondArgs.map((number) => Number(number));
@@ -155,7 +156,7 @@ function CalculatorProcessor(opsType, secondArgs = []){
 
 function ask(question){
     rl.question(question, (answer)=>{
-        let [opsType, ...list]= answer.split(" ");
+        let [opsType, ...list]= answer.split(" ").filter((val) => val !== '');
 
         opsType = opsType.toString().toLowerCase();
 
