@@ -1,3 +1,4 @@
+const { error } = require("console");
 const readline = require("readline");
 
 const rl = readline.createInterface({
@@ -137,9 +138,8 @@ function CalculatorProcessor(opsType, secondArgs = []){
             ModeHandler(secondArgs);
             break;
         default:
-            if(!opsList.includes(opsType)){
-                console.log(`error : Unknown command [${opsType}]\n`);
-                break;
+            if(secondArgs.length === 0){
+                console.log(`error : Insert some number`);
             }
 
             let [...list] = secondArgs.map((number) => Number(number));
@@ -190,7 +190,7 @@ function ask(question){
                     break;
             }
         }else{
-            console.error(`error : Unknown command. See 'help'`);
+            console.error(`error : Unknown command '${opsType}'. See 'help'`);
         }
 
         ask(question);
