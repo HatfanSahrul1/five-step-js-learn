@@ -190,12 +190,12 @@ function ask(question){
                     break;
             }
         }else{
-            console.error(`error : Unknown command. See 'help`);
+            console.error(`error : Unknown command. See 'help'`);
         }
 
         ask(question);
     });
 }
 
-console.log("SELAMAT DATANG DI KALKULATOR CLI\n");
+console.log("SELAMAT DATANG DI KALKULATOR CLI\nSee 'help' for info");
 ask("> ");
