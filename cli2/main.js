@@ -189,6 +189,7 @@ function ask(question){
                     break;
                 case state_list.EXIT:
                     console.log("Goodbye :)");
+                    rl.close();
                     process.exit(0);
                     break;
             
