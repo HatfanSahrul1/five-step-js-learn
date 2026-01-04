@@ -138,6 +138,11 @@ function CalculatorProcessor(opsType, secondArgs = []){
             ModeHandler(secondArgs);
             break;
         default:
+            if(!Command.operationList.includes(opsType)){
+                console.log(`error : Unknown command [${opsType}]\n`);
+                break;
+            }
+
             if(secondArgs.length === 0){
                 console.log(`error : Insert some number`);
                 break;
