@@ -27,8 +27,7 @@ function addFile(name) {
 
 async function processFile(file) {
   if (file.status !== FILE_STATE.IDLE) {
-    console.log(`File ${file.id} cannot be Proceed`);
-    return;
+    throw new Error(`File ${file.id} cannot be processed`);
   }
 
   file.status = FILE_STATE.RUNNING;
@@ -37,9 +36,10 @@ async function processFile(file) {
   try {
     const {time} = await fakeAsyncWork();
     file.status = FILE_STATE.SUCCESS;
-    return;
+    return {time};
   } catch (err){
     file.status = FILE_STATE.FAILED;
+    throw new Error(err);
   }
 }
 
@@ -53,28 +53,36 @@ function fakeAsyncWork() {
   });
 }
 
-function processFileById(id) {
+async function processFileById(id) {
   const file = state.files.find((t) => t.id === Number(id));
   if (!file) {
-    console.log("file not found");
-    return;
+    throw new Error('File not found');
   }
-  processFile(file);
+  const result = await processFile(file);
+  return {
+    message: `File ${file.id} processed successfully`,
+    time: result.time
+  };
 }
 
 function listFiles() {
-  state.files.forEach((t) => {
-    console.log(`[${t.id}] ${t.name} - ${t.status}`);
-  });
+  return state.files.map((t) => ({
+    id: t.id,
+    name: t.name,
+    status: t.status
+  }));
 }
 
 function showFileStatus(id) {
   const file = state.files.find((t) => t.id === Number(id));
   if (!file) {
-    console.log("Task not found");
-    return;
+    return null;
   }
-  console.log(`Task ${file.id} is ${file.status}`);
+  return {
+    id: file.id,
+    name: file.name,
+    status: file.status
+  };
 }
 
 module.exports = {
