@@ -20,10 +20,87 @@ class API_BRIGDE {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
-            console.log(await response.json());
+            const data = await response.json();
+            console.log(data.message);
+            return data;
         }
         catch(err){
-            console.log(err);
+            console.log(err.message);
+            return null;
+        }
+    }
+
+    async listFiles(){
+        try{
+            const response = await fetch(`${this._url}/files`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            if(result.success === 'true'){
+                result.data.forEach((file) => {
+                    console.log(`[${file.id}] ${file.name} - ${file.status}`);
+                });
+            }
+            return result;
+        }
+        catch(err){
+            console.log(err.message);
+            return null;
+        }
+    }
+
+    async showFileStatus(id){
+        try{
+            const response = await fetch(`${this._url}/file/${id}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            if(result.success === 'true'){
+                console.log(`File ${result.data.id} is ${result.data.status}`);
+            } else {
+                console.log(result.message);
+            }
+            return result;
+        }
+        catch(err){
+            console.log(err.message);
+            return null;
+        }
+    }
+
+    async processFile(id){
+        try{
+            const response = await fetch(`${this._url}/process`, {
+                method: 'POST',
+                headers: {
+                    'content-type' : 'application/json'
+                },
+                body: JSON.stringify({
+                    fileId: id
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            if(result.success === 'true'){
+                console.log(`${result.message} [${result.time} ms]`);
+            } else {
+                console.log(result.message);
+            }
+            return result;
+        }
+        catch(err){
+            console.log(err.message);
+            return null;
         }
     }
 }
